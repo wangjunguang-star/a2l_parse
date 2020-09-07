@@ -13,10 +13,12 @@ import com.psagroup.calibrationparserapi.a2lobject.compumethod.CompuVTab;
 import com.psagroup.calibrationparserapi.a2lobject.recordlayout.DataType;
 import com.psagroup.calibrationparserapi.a2lobject.recordlayout.RecordLayout;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.text.StyledEditorKit;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -79,11 +81,11 @@ public class ValueHandler {
         //System.out.println("caracList size:" + caracList.size());
 
         for (Iterator<Characteristic> iterator = caracList.iterator(); iterator.hasNext(); ) {
-            System.out.println("-----------------------------------------------------");
+            //System.out.println("-----------------------------------------------------");
             Characteristic c = iterator.next();
 
             if (filterCarac.contains(c.getLabel()) || filterCarac.isEmpty()) {
-                System.out.println(c.getLabel() + "########" + c.getChartype().name());
+                //System.out.println(c.getLabel() + "########" + c.getChartype().name());
                 if (c.getChartype() == null) {
                     // If the Chartype is unknown by the system
                     logger.error("Type de CharType inconnu {} pour la characteristic {}", c.getChartype(), c.getLabel());
@@ -134,31 +136,55 @@ public class ValueHandler {
             Double lower = _c.getLower();
             CharType charType =  _c.getChartype();
 
+            JSONObject js = new JSONObject();
+            js.put("label", labels);
+            js.put("charType: ", charType)
+            js.put("Address: " , Address);
+            js.put("Number: ", Number);
+            js.put("description: ", description);
+            js.put("RecordLayout: ", RecordLayout);
+            js.put("ComputMethod: ", computMethod);
+            js.put("upper: ", upper);
+            js.put("lower: ", lower);
+            js.put("maxdiff: ", _c.getMaxdiff());
+            js.put("extended_limits", _c.getExtended_limits());
+            js.put("format", _c.getFormat());
+            if(result == null) {
+                js.put("data", "");
+            } else {
+                js.put("data", result.toString());
+            }
+
+            System.out.println("Output = " + js.toString());
+
+
+
+
 //            List<AxisDescr> axisDescrs = _c.getAxises();
 //            for(int j=0; j<axisDescrs.size(); j++) {
 //                axisDescrs.get(j);
 //            }
-            System.out.println("############## -----------");
-            System.out.println("labels: " + labels);
-            System.out.println("RecordLayout: " + RecordLayout);
-            System.out.println("ComputMethod: " + computMethod);
-            System.out.println("Address: " + Address);
-            System.out.println("Number: " + Number);
-            System.out.println("description: " + description);
-            System.out.println("upper: " + upper);
-            System.out.println("lower: " + lower);
-            if(result == null){
-                System.out.println("{data:{}}");
-            } else {
-                System.out.println(result.toString());
-            }
-            System.out.println("charType: " + charType);
-            System.out.println(_c.getMaxdiff());
-            System.out.println(_c.getExtended_limits());
-            System.out.println(_c.getFormat());
-
-            CompuMethod computMethod_ = compuMethodMap.get(computMethod);
-            computMethod_.printCompuMethodInfo();
+//            System.out.println("############## -----------");
+//            System.out.println("labels: " + labels);
+//            System.out.println("RecordLayout: " + RecordLayout);
+//            System.out.println("ComputMethod: " + computMethod);
+//            System.out.println("Address: " + Address);
+//            System.out.println("Number: " + Number);
+//            System.out.println("description: " + description);
+//            System.out.println("upper: " + upper);
+//            System.out.println("lower: " + lower);
+//            if(result == null){
+//                System.out.println("{data:{}}");
+//            } else {
+//                System.out.println(result.toString());
+//            }
+//            System.out.println("charType: " + charType);
+//            System.out.println(_c.getMaxdiff());
+//            System.out.println(_c.getExtended_limits());
+//            System.out.println(_c.getFormat());
+//
+//            CompuMethod computMethod_ = compuMethodMap.get(computMethod);
+//            computMethod_.printCompuMethodInfo();
 
         }
         System.out.println("Result size : " + filteredCaracList.size());
@@ -477,7 +503,10 @@ public class ValueHandler {
         AxisDescr axis = c.getAxises().getFirst();
         int nbpoints = axis.getNbpoints();
         AxisPts axisPts = axisPtsMap.get(axis.getRefAxisPts());
-        System.out.println("Row 480 : " + axisPts.getRefRecordLayout());
+        //System.err.println("000 Row 480 : " + axis.getRefAxisPts());
+        //System.err.println("111 Row 480 : " + axis.getType() + " " + c.getLabel());
+        //System.err.println("222 Row 480 : " + axisPts.getRefRecordLayout() + " " + axis.getType() + " " + c.getLabel());
+        //System.err.println("Row 480 : " + recordlayoutMap.get(axisPts.getRefRecordLayout()));
         int byteperReadAxe = recordlayoutMap.get(axisPts.getRefRecordLayout()).getAxisptsx().getNbbits() / 8;
         int byteperRead = recordlayoutMap.get(c.getRefRecordLayout()).getFncvalue().getNbbits() / 8;
         int byteperReadNoAxe = (recordlayoutMap.get(axisPts.getRefRecordLayout()).getNoaxisptsx() == null) ? 0
