@@ -13,13 +13,22 @@ public class AxisPts extends PrimaryObject {
 	String refComputMethod;
 	String refRecordLayout;
 
+	/**
+	 * for debug
+	 */
+	public void printAxisPtsInfo() {
+		System.out.println("AxisPts Info:");
+		String info_str = String.format("address:%s, description:%s, label:%s, maxdiff:%s, inputquantity:%s" +
+				", format:%s, upper:%f, lower:%f, nbpoints:%d, absolute:%s, refComputMethod:%s, refRecordLayout:%s",
+				address,description,label,maxdiff, inputquantity, format, upper, lower, nbpoints, absolute, refComputMethod, refRecordLayout);
+		System.out.println(info_str);
+	}
+
 	public String getLabel() {
 		return label;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+	public void setLabel(String label) { this.label = label; }
 
 	public void setDescription(String description) {
 		this.description = description;

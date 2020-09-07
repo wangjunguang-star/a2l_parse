@@ -31,6 +31,7 @@ public class AxisPtsParser extends A2LObjectParser {
                 String axisPtsContent = sb.toString().trim().replaceAll("/\\*.*\\*/", "");
                 AxisPts axisPts = buildA2lObject(axisPtsContent);
                 axisPtsList.put(axisPts.getLabel(), axisPts);
+                axisPts.printAxisPtsInfo();
             } catch (Exception e) {
                 logger.error(ab.build().getLabel());
                 e.printStackTrace();
@@ -40,6 +41,21 @@ public class AxisPtsParser extends A2LObjectParser {
 
     private AxisPts buildA2lObject(String axisPtsContent) {
         String[] axisPtsParts = divideContent(axisPtsContent);
+
+        /**
+         * for debug
+         */
+        System.out.println("AxisPts Row: ");
+        int j = 0;
+        for(String str: axisPtsParts){
+            System.out.print(j + ":" + str + " ");
+            j += 1;
+        }
+        System.out.println();
+        for(int ii=0; ii<axisPtsParts.length; ii++) {
+            System.out.print(ii + ":" + axisPtsParts[ii] + " ");
+        }
+
         ab.label(axisPtsParts[2]);
         ab.description(axisPtsParts[3]);
         ab.address(axisPtsParts[4]);

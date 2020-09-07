@@ -13,6 +13,7 @@ import com.psagroup.calibrationparserapi.a2lobject.compumethod.CompuVTab;
 import com.psagroup.calibrationparserapi.a2lobject.recordlayout.DataType;
 import com.psagroup.calibrationparserapi.a2lobject.recordlayout.RecordLayout;
 import org.json.JSONException;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class ValueHandler {
     private static final String ROW_DIR = "ROW_DIR";
     private static final String COLUMN_DIR = "COLUMN_DIR";
     private static final String DATA_FIELD = "data";
-    public static final int ULP_DATA_RANGE = 127;
+    public static final int ULP_DATA_RANGE = 32;
     public static final int HEX_DATA_RANGE = 32;
 
     private final Logger logger = LoggerFactory.getLogger(ValueHandler.class);
@@ -133,20 +134,24 @@ public class ValueHandler {
             Double lower = _c.getLower();
             CharType charType =  _c.getChartype();
 
-            List<AxisDescr> axisDescrs = _c.getAxises();
-            for(int j=0; j<axisDescrs.size(); j++) {
-                axisDescrs.get(j);
-            }
+//            List<AxisDescr> axisDescrs = _c.getAxises();
+//            for(int j=0; j<axisDescrs.size(); j++) {
+//                axisDescrs.get(j);
+//            }
             System.out.println("############## -----------");
             System.out.println("labels: " + labels);
             System.out.println("RecordLayout: " + RecordLayout);
             System.out.println("ComputMethod: " + computMethod);
             System.out.println("Address: " + Address);
-            System.out.println("Number" + Number);
+            System.out.println("Number: " + Number);
             System.out.println("description: " + description);
             System.out.println("upper: " + upper);
-            System.out.println("lower" + lower);
-            System.out.println(result.toString());
+            System.out.println("lower: " + lower);
+            if(result == null){
+                System.out.println("{data:{}}");
+            } else {
+                System.out.println(result.toString());
+            }
             System.out.println("charType: " + charType);
             System.out.println(_c.getMaxdiff());
             System.out.println(_c.getExtended_limits());
@@ -156,6 +161,7 @@ public class ValueHandler {
             computMethod_.printCompuMethodInfo();
 
         }
+        System.out.println("Result size : " + filteredCaracList.size());
         return filteredCaracList;
 
     }
@@ -188,8 +194,11 @@ public class ValueHandler {
      */
     private void setSinglevalueNum(Characteristic c) {
         // Determine the number of hexadecimal byte to read to get a single value
-        //System.out.println("!!!!!!! " + c.getRefRecordLayout());   // !!null!!
         DataType datatype = recordlayoutMap.get(c.getRefRecordLayout()).getFncvalue();
+
+        System.out.println("!!!!!!! " + c.getLabel() + " # " + c.getRefRecordLayout() + " # " + datatype + " # " + datatype.getNbbits()
+        + " # " + c.getRefComputMethod());
+
         int byteperRead = datatype.getNbbits() / 8;
         ObjectNode data = jsonMapper.createObjectNode();
         ObjectNode value = data.putObject(DATA_FIELD);
@@ -199,6 +208,9 @@ public class ValueHandler {
             // function from the COMPU_METHOD
             value.put(VALUE_FIELD, compuMethodMap.get(c.getRefComputMethod())
                     .rat_func(decodeValue(datatype, addressMap, byteperRead, c.getAddress()))).put(UNIT, unit);
+
+            System.out.println(" ### " + decodeValue(datatype, addressMap, byteperRead, c.getAddress()));
+
         } catch (Exception e) {
             logger.info("Pour l'adresse {} de la charac {}", c.getAddress(), c.getLabel());
         }
@@ -213,11 +225,20 @@ public class ValueHandler {
      * @param c the charac to assign
      */
     private void setSinglevalueEnum(Characteristic c) {
+        System.out.println("¥¥¥¥¥:");
+        c.getCharacteristicInfo();
+        recordlayoutMap.get(c.getRefRecordLayout()).printRecordLayoutInfo();
         int byteperRead = recordlayoutMap.get(c.getRefRecordLayout()).getFncvalue().getNbbits() / 8;
         CompuVTab enuObj = compuVTabMap.get((compuMethodMap.get(c.getRefComputMethod()).getRefcomputab()));
+        System.out.println("¥¥¥¥¥¥: ");
+        enuObj.printCompuVTabInfo();
         ObjectNode data = jsonMapper.createObjectNode();
         ObjectNode value = data.putObject(DATA_FIELD);
         try {
+        System.out.println("¥¥¥¥¥: ");
+        System.out.println(decodePosValue(addressMap, byteperRead, c.getAddress()));
+        System.out.println("data : " + enuObj.getEnu().get(decodePosValue(addressMap, byteperRead, c.getAddress())));
+        System.out.println(byteperRead + " - " + c.getAddress());
             value.put(VALUE_FIELD,
                     enuObj.getEnu().get(decodePosValue(addressMap, byteperRead, c.getAddress())).replaceAll("\"", ""))
                     .put(UNIT, "");
@@ -456,6 +477,7 @@ public class ValueHandler {
         AxisDescr axis = c.getAxises().getFirst();
         int nbpoints = axis.getNbpoints();
         AxisPts axisPts = axisPtsMap.get(axis.getRefAxisPts());
+        System.out.println("Row 480 : " + axisPts.getRefRecordLayout());
         int byteperReadAxe = recordlayoutMap.get(axisPts.getRefRecordLayout()).getAxisptsx().getNbbits() / 8;
         int byteperRead = recordlayoutMap.get(c.getRefRecordLayout()).getFncvalue().getNbbits() / 8;
         int byteperReadNoAxe = (recordlayoutMap.get(axisPts.getRefRecordLayout()).getNoaxisptsx() == null) ? 0
@@ -1337,6 +1359,7 @@ public class ValueHandler {
         }
         try {
             String bin = Long.toString(Long.parseLong(hexaValue.substring(2), 16), 2);
+            System.out.println(hexaValue + " ## " + bin + " ## " + byteperRead);
             switch (d) {
                 case SBYTE:
                     if (bin.startsWith("1") && bin.length() == 8) {
@@ -1400,15 +1423,21 @@ public class ValueHandler {
         Long decAddress = Long.decode(address);
         String decodedValueHEX = "0x";
 
+        //System.out.println("searchValueHEX - decAddress:" + " " + address + " " + decAddress);
+
         // When an address, near the address we're looking for, matches a key address
         // from the AddressDataMap
         for (long i = decAddress - dataRangeRecord; i < decAddress; i++) {
+
+            //System.out.println("searchValueHEX - i: " + " " + i + " " + Long.toHexString(i));
+
             if (AddressDataMap.containsKey(Long.toHexString(i))) {
                 String invDecodedValueHex = "";
                 // We take its position in the Data set of the AddressDataMap of the key address
                 long diff = decAddress - i;
                 try {
                     // We split the Dataset into an array of hexadecimal byte
+                    System.out.println("look up table : " + Long.toHexString(i));
                     String[] vData = AddressDataMap.get(Long.toHexString(i)).split(" ");
                     for (int j = 0; j < byteperRead; j++) {
                         try {
@@ -1443,6 +1472,8 @@ public class ValueHandler {
                     logger.error(e.getMessage() + " = pas de correspondance pour l'adresse : " + address
                             + " avec pour plage d'adresse " + Long.toHexString(i));
                 }
+                //System.out.println("invDecodedValueHex:  "+invDecodedValueHex);
+                //System.out.println("decodedValueHEX:  " + decodedValueHEX);
                 break;
             }
         }

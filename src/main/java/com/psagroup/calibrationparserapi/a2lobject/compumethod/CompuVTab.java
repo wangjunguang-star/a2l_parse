@@ -17,7 +17,7 @@ public class CompuVTab extends PrimaryObject {
 		String info_str = String.format("label: %s, description: %s, type:%s, nbofStrings:%s", label, description, type, nbofStrings);
 		System.out.println("CompuVTab Info: " + info_str);
 		for(Double k : enu.keySet()){
-			System.out.print(k + " " + enu.get(k));
+			System.out.print(k + " " + enu.get(k) + "   ");
 		}
 		System.out.println();
 	}

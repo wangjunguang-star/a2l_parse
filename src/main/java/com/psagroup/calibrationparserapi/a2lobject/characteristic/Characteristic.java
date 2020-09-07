@@ -25,6 +25,18 @@ public class Characteristic extends PrimaryObject {
 	
 	JsonNode result;
 
+	public void getCharacteristicInfo(){
+		System.out.println("Characteristic Info: ");
+		String info_str = String.format("label:%s , address:%s , description:%s , maxdiff:%s , format:%s , extended_limits:%s"
+		,label,address,description, maxdiff, format, extended_limits);
+
+		String info_str1 = String.format("upper:%f , lower:%f , number:%d , chartype:%s , refComputMethod:%s , refRecordLayout:%s "
+				, upper, lower , number , chartype , refComputMethod , refRecordLayout);
+
+		System.out.println(info_str);
+		System.out.println(info_str1);
+	}
+
 
 	public void setLabel(String label) {
 		this.label = label;
@@ -100,7 +112,12 @@ public class Characteristic extends PrimaryObject {
 		return number;
 	}
 
-	public JsonNode getResult() { return result; }
+	public JsonNode getResult() {
+		if(result != null) {
+			return result;
+		}
+		return null;
+	}
 
 	public String getDescription() { return description;}
 

@@ -15,14 +15,15 @@ public class CharacteristicParser extends A2LObjectParser {
         if (currentLine.replaceAll("\\s+", "").startsWith("/beginCHARACTERISTIC")) {
             StringBuilder sb = new StringBuilder();
             sb.append(currentLine);
-            while (!(currentLine = next(reader)).replaceAll("\\s+", "").startsWith("/endCHARACTERISTIC")) {
+            while (!(currentLine = next(reader)).replaceAll("\\s+", "").startsWith("/endCHARAC")) {
                 sb.append("\n ");
                 sb.append(currentLine);
                 //System.out.println(currentLine);
             }
             try {
+                //System.out.println("KKKK : " + sb.toString());
                 String charContent = sb.toString().trim().replaceAll("/\\*.*\\*/", "");
-                //System.out.println(charContent);
+                //System.out.println("KKKKK : " + charContent);
                 caracList.add(buildA2lObject(charContent));
             } catch (Exception e) {
                 System.out.println(cb.build().getLabel());
@@ -48,12 +49,15 @@ public class CharacteristicParser extends A2LObjectParser {
         /**
          * for debug
          */
-//        for(int i=0; i< charParts.length; i++) {
-//            System.out.println(charParts[i]);
-//        }
-//        System.out.println("###############################");
+        for(int i=0; i< charParts.length; i++) {
+            System.out.print(i + ":" + charParts[i] + " ; ");
+        }
+        System.out.println("###############################");
 
-        /******************/
+//        /******************/
+//        Characteristic cc = cb.build();
+//        cc.getCharacteristicInfo();
+////        return cb.build();
         return cb.build();
     }
 

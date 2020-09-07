@@ -19,10 +19,12 @@ public class CompuMethod extends PrimaryObject {
         String info_str = String.format( "label: %s, description: %s, type: %s, format: %s, unit: %s, refcomputab: %s"
                 , label, description, type, format, unit, refcomputab);
         System.out.println(info_str);
-        for (double coeff : coeffs) {
-            System.out.print(coeff + " ");
+        if(coeffs != null) {
+            for (double coeff : coeffs) {
+                System.out.print(coeff + " ");
+            }
+            System.out.println();
         }
-        System.out.println();
 
     }
 

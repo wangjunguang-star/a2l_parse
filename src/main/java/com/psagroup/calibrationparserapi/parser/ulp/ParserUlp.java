@@ -27,6 +27,9 @@ public class ParserUlp {
                 records.put(address.toLowerCase(), formatData(data));
             }
         }
+//        for(String key : records.keySet()) {
+//            System.err.println("ULP MAP INFO: " + key + ":" + records.get(key));
+//        }
     }
 
 
