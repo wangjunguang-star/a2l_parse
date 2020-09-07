@@ -15,13 +15,13 @@ public class CompuMethod extends PrimaryObject {
     private double[] coeffs;
 
     public void printCompuMethodInfo() {
-        System.out.println("CompuMethod Info");
+        //System.out.println("CompuMethod Info");
         String info_str = String.format( "label: %s, description: %s, type: %s, format: %s, unit: %s, refcomputab: %s"
                 , label, description, type, format, unit, refcomputab);
-        System.out.println(info_str);
+        //System.out.println(info_str);
         if(coeffs != null) {
             for (double coeff : coeffs) {
-                System.out.print(coeff + " ");
+                //System.out.print(coeff + " ");
             }
             System.out.println();
         }

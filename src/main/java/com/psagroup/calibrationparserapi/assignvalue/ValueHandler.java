@@ -137,24 +137,29 @@ public class ValueHandler {
             CharType charType =  _c.getChartype();
 
             JSONObject js = new JSONObject();
-            js.put("label", labels);
-            js.put("charType: ", charType)
-            js.put("Address: " , Address);
-            js.put("Number: ", Number);
-            js.put("description: ", description);
-            js.put("RecordLayout: ", RecordLayout);
-            js.put("ComputMethod: ", computMethod);
-            js.put("upper: ", upper);
-            js.put("lower: ", lower);
-            js.put("maxdiff: ", _c.getMaxdiff());
-            js.put("extended_limits", _c.getExtended_limits());
-            js.put("format", _c.getFormat());
-            if(result == null) {
-                js.put("data", "");
-            } else {
-                js.put("data", result.toString());
+            try {
+                js.put("label", labels);
+                js.put("charType: ", charType);
+                js.put("Address: ", Address);
+                js.put("Number: ", Number);
+                js.put("description: ", description);
+                js.put("RecordLayout: ", RecordLayout);
+                js.put("ComputMethod: ", computMethod);
+                js.put("upper: ", upper);
+                js.put("lower: ", lower);
+                js.put("maxdiff: ", _c.getMaxdiff());
+                js.put("extended_limits", _c.getExtended_limits());
+                js.put("format", _c.getFormat());
+                if (result == null) {
+                    js.put("data", "");
+                } else {
+                    js.put("data", result.toString());
+                }
+            } catch (JSONException e)
+            {
+                //some exception handler code
+                System.err.println("Json Error! " + _c.getLabel());
             }
-
             System.out.println("Output = " + js.toString());
 
 
@@ -189,7 +194,6 @@ public class ValueHandler {
         }
         System.out.println("Result size : " + filteredCaracList.size());
         return filteredCaracList;
-
     }
 
     /**
