@@ -125,25 +125,6 @@ public class ParserService {
         vh = new ValueHandler(pA2l.caracList, recordData, pA2l.axisPtsMap, pA2l.compuVTabMap,
                 pA2l.compuMethodMap, pA2l.recordLayoutMap, labels, getTypeRecordData());
 
-        /**
-         * for debug
-         */
-        /**
-        for(String key : pA2l.recordLayoutMap.keySet()){
-            System.out.println(key);
-            System.out.println(pA2l.recordLayoutMap.get(key).getLabel());
-            System.out.println("-----------------------------");
-        }
-        int sz = pA2l.caracList.size();
-        for(int jj=0; jj<sz; jj++){
-            Characteristic ch = pA2l.caracList.get(jj);
-            System.out.println( ch.getRefRecordLayout());   // 这里输出的null,有问题
-            System.out.println("]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
-        }
-         */
-        /** end debug
-         */
-
         try {
             System.out.println(getTypeRecordData());
             vh.assignValues(getTypeRecordData());
@@ -152,6 +133,27 @@ public class ParserService {
         }
         logger.info("Fin de l'affectation des resultats pour les Characteristics");
 
+    }
+
+    public List<Characteristic> assignValues2(List<String> labels, Map<String, String> recordData) {
+        logger.info("Demarrage de l'affectation des resultats pour les Characteristics");
+
+        // After the creation of all of the A2l objects, we assign values to Charac with the
+        // ValueHandler
+
+        List<Characteristic> result = null;
+
+        vh = new ValueHandler(pA2l.caracList, recordData, pA2l.axisPtsMap, pA2l.compuVTabMap,
+                pA2l.compuMethodMap, pA2l.recordLayoutMap, labels, getTypeRecordData());
+
+        try {
+            result = vh.assignValues(getTypeRecordData());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("Fin de l'affectation des resultats pour les Characteristics");
+        
+        return result;
     }
 
     public Map<String, String> getRecordData() {

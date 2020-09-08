@@ -123,73 +123,44 @@ public class ValueHandler {
         /**
          * output
          */
-        for(int k=0; k<filteredCaracList.size(); k++){
-            Characteristic _c = filteredCaracList.get(k);
-            String labels = _c.getLabel();
-            String RecordLayout = _c.getRefRecordLayout();
-            String computMethod = _c.getRefComputMethod();
-            String Address = _c.getAddress();
-            Integer Number =  _c.getNumber();
-            JsonNode result = _c.getResult();
-            String description = _c.getDescription();
-            Double upper = _c.getUpper();
-            Double lower = _c.getLower();
-            CharType charType =  _c.getChartype();
-
-            JSONObject js = new JSONObject();
-            try {
-                js.put("label", labels);
-                js.put("charType: ", charType);
-                js.put("Address: ", Address);
-                js.put("Number: ", Number);
-                js.put("description: ", description);
-                js.put("RecordLayout: ", RecordLayout);
-                js.put("ComputMethod: ", computMethod);
-                js.put("upper: ", upper);
-                js.put("lower: ", lower);
-                js.put("maxdiff: ", _c.getMaxdiff());
-                js.put("extended_limits", _c.getExtended_limits());
-                js.put("format", _c.getFormat());
-                if (result == null) {
-                    js.put("data", "");
-                } else {
-                    js.put("data", result.toString());
-                }
-            } catch (JSONException e)
-            {
-                //some exception handler code
-                System.err.println("Json Error! " + _c.getLabel());
-            }
-            System.out.println("Output = " + js.toString());
-
-
-
-
-//            List<AxisDescr> axisDescrs = _c.getAxises();
-//            for(int j=0; j<axisDescrs.size(); j++) {
-//                axisDescrs.get(j);
-//            }
-//            System.out.println("############## -----------");
-//            System.out.println("labels: " + labels);
-//            System.out.println("RecordLayout: " + RecordLayout);
-//            System.out.println("ComputMethod: " + computMethod);
-//            System.out.println("Address: " + Address);
-//            System.out.println("Number: " + Number);
-//            System.out.println("description: " + description);
-//            System.out.println("upper: " + upper);
-//            System.out.println("lower: " + lower);
-//            if(result == null){
-//                System.out.println("{data:{}}");
-//            } else {
-//                System.out.println(result.toString());
-//            }
-//            System.out.println("charType: " + charType);
-//            System.out.println(_c.getMaxdiff());
-//            System.out.println(_c.getExtended_limits());
-//            System.out.println(_c.getFormat());
+//        for(int k=0; k<filteredCaracList.size(); k++){
+//            Characteristic _c = filteredCaracList.get(k);
+//            String labels = _c.getLabel();
+//            String RecordLayout = _c.getRefRecordLayout();
+//            String computMethod = _c.getRefComputMethod();
+//            String Address = _c.getAddress();
+//            Integer Number =  _c.getNumber();
+//            JsonNode result = _c.getResult();
+//            String description = _c.getDescription();
+//            Double upper = _c.getUpper();
+//            Double lower = _c.getLower();
+//            CharType charType =  _c.getChartype();
 //
-//            CompuMethod computMethod_ = compuMethodMap.get(computMethod);
-//            computMethod_.printCompuMethodInfo();
+//            JSONObject js = new JSONObject();
+//            try {
+//                js.put("label", labels);
+//                js.put("charType: ", charType);
+//                js.put("Address: ", Address);
+//                js.put("Number: ", Number);
+//                js.put("description: ", description);
+//                js.put("RecordLayout: ", RecordLayout);
+//                js.put("ComputMethod: ", computMethod);
+//                js.put("upper: ", upper);
+//                js.put("lower: ", lower);
+//                js.put("maxdiff: ", _c.getMaxdiff());
+//                js.put("extended_limits", _c.getExtended_limits());
+//                js.put("format", _c.getFormat());
+//                if (result == null) {
+//                    js.put("data", "");
+//                } else {
+//                    js.put("data", result.toString());
+//                }
+//            } catch (JSONException e)
+//            {
+//                //some exception handler code
+//                System.err.println("Json Error! " + _c.getLabel());
+//            }
+//            System.out.println("Output = " + js.toString());
 
         }
         System.out.println("Result size : " + filteredCaracList.size());
