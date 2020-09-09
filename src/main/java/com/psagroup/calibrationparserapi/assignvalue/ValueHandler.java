@@ -161,8 +161,7 @@ public class ValueHandler {
 //                System.err.println("Json Error! " + _c.getLabel());
 //            }
 //            System.out.println("Output = " + js.toString());
-
-        }
+//
         System.out.println("Result size : " + filteredCaracList.size());
         return filteredCaracList;
     }
