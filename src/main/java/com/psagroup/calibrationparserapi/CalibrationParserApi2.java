@@ -88,7 +88,7 @@ public class CalibrationParserApi2 {
                 js.put("extended_limits", _c.getExtended_limits());
                 js.put("format", _c.getFormat());
                 if (result == null) {
-                    js.put("data", "");
+                    js.put("data", "{}");
                 } else {
                     js.put("data", result.toString());
                 }
