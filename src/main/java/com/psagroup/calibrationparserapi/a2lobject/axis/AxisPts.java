@@ -24,6 +24,10 @@ public class AxisPts extends PrimaryObject {
 		System.out.println(info_str);
 	}
 
+	public String getInputquantity() {
+		return inputquantity;
+	}
+
 	public String getLabel() {
 		return label;
 	}

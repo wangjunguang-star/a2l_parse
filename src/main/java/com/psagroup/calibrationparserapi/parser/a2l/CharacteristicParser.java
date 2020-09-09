@@ -84,7 +84,7 @@ public class CharacteristicParser extends A2LObjectParser {
                     cb.number(element + " " + charParts[i + 1] + " " + charParts[i + 2] + " " + charParts[i + 3]);
                     break;
                 case "/begin":
-                    if (charParts[i + 1].equals("AXIS_DESCR")) {
+                    if (charParts[i + 1].equals("AXIS_DESCR")) {  // map的输入输出的测量量放在这
                         int j = i + 2;
                         StringBuilder axisSb = new StringBuilder();
                         while (!charParts[j].equals("/end")) {

@@ -25,12 +25,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 public class ValueHandler {
 
     private static final String AXIS_Y = "axisY";
     private static final String AXIS_X = "axisX";
     private static final String UNIT = "unit";
+    private static final String INPUTQ = "inputquantity";
     private static final String READWAY = "readway";
     private static final String VALUE_FIELD = "value";
     private static final String ROW_DIR = "ROW_DIR";
@@ -365,6 +367,7 @@ public class ValueHandler {
      */
     private void handleFIXCurve(Characteristic c) {
         AxisDescr axis = c.getAxises().getFirst();
+        String inputquantity = axis.getInputquantity();
         int nbpoints = axis.getNbpoints();
         ObjectNode main = jsonMapper.createObjectNode();
         ObjectNode axisX = main.putObject(AXIS_X);
@@ -387,6 +390,7 @@ public class ValueHandler {
 
                 axisX.set(VALUE_FIELD, objtabaxis);
                 axisX.put(UNIT, unit);
+                axisX.put(INPUTQ, inputquantity);
                 break;
             case TAB_VERB:
                 CompuVTab enuObj = compuVTabMap.get((compuMethodMap.get(axis.getRefCompuMethod()).getRefcomputab()));
@@ -397,6 +401,7 @@ public class ValueHandler {
                 }
                 axisX.set(VALUE_FIELD, objtabaxis);
                 axisX.put(UNIT, "");
+                axisX.put(INPUTQ, inputquantity);
                 break;
             default:
                 break;
@@ -493,6 +498,8 @@ public class ValueHandler {
         ArrayNode objtabaxis = jsonMapper.createArrayNode();
         ArrayNode objtabdata = jsonMapper.createArrayNode();
 
+        String inputquantity = c.getAxises().getFirst().getInputquantity();
+
         // Determination of the axis
         switch (compuMethodMap.get((c.getAxises().getFirst().getRefCompuMethod())).getType()) {
             case RAT_FUNC:
@@ -507,6 +514,7 @@ public class ValueHandler {
 
                 axisX.set(VALUE_FIELD, objtabaxis);
                 axisX.put(UNIT, unit);
+                axisX.put(INPUTQ, inputquantity);
 
                 break;
             case TAB_VERB:
@@ -519,6 +527,7 @@ public class ValueHandler {
                 }
                 axisX.set(VALUE_FIELD, objtabaxis);
                 axisX.put(UNIT, "");
+                axisX.put(INPUTQ, inputquantity);
                 break;
             default:
                 break;
@@ -584,6 +593,8 @@ public class ValueHandler {
         ArrayNode objtabaxis = jsonMapper.createArrayNode();
         ArrayNode objtabdata = jsonMapper.createArrayNode();
 
+        String inputquantity = c.getAxises().getFirst().getInputquantity();
+
         // Determine the axis
         switch (compuMethodMap.get((c.getAxises().getFirst().getRefCompuMethod())).getType()) {
             case RAT_FUNC:
@@ -598,6 +609,7 @@ public class ValueHandler {
 
                 axisX.set(VALUE_FIELD, objtabaxis);
                 axisX.put(UNIT, unit);
+                axisX.put(INPUTQ, inputquantity);
 
                 break;
             case TAB_VERB:
@@ -611,6 +623,7 @@ public class ValueHandler {
                 }
                 axisX.set(VALUE_FIELD, objtabaxis);
                 axisX.put(UNIT, "");
+                axisX.put(INPUTQ, inputquantity);
 
                 break;
             default:
@@ -824,6 +837,7 @@ public class ValueHandler {
 
         // Determine the axis 1
         AxisPts axisPts1 = axisPtsMap.get(c.getAxises().getFirst().getRefAxisPts());
+        String inputquantity1 = axisPts1.getInputquantity();
         int nbpoints1 = axisPts1.getNbpoints();
         int byteperReadAxe1 = recordlayoutMap.get(axisPts1.getRefRecordLayout()).getAxisptsx().getNbbits() / 8;
         String addressAxe1 = axisPts1.getAddress();
@@ -832,7 +846,6 @@ public class ValueHandler {
             case RAT_FUNC:
                 String unit = compuMethodMap.get((c.getAxises().getFirst().getRefCompuMethod())).getUnit().replaceAll("\"",
                         "");
-
                 double[] dtab = affectNumValues(recordlayoutMap.get(axisPts1.getRefRecordLayout()).getAxisptsx(),
                         addressAxe1, nbpoints1, byteperReadAxe1,
                         compuMethodMap.get((c.getAxises().getFirst().getRefCompuMethod())));
@@ -842,6 +855,8 @@ public class ValueHandler {
 
                 axisX.set(VALUE_FIELD, objtabaxisX);
                 axisX.put(UNIT, unit);
+                axisX.put(INPUTQ, inputquantity1);
+
                 break;
             case TAB_VERB:
                 CompuVTab enuObj = compuVTabMap
@@ -853,6 +868,7 @@ public class ValueHandler {
                 }
                 axisX.set(VALUE_FIELD, objtabaxisX);
                 axisX.put(UNIT, "");
+                axisX.put(INPUTQ, inputquantity1);
 
                 break;
             default:
@@ -861,6 +877,7 @@ public class ValueHandler {
 
         // Determine the axis 1
         AxisDescr axis2 = c.getAxises().get(1);
+        String inputquantity2 = axis2.getInputquantity();
         int nbpoints2 = axis2.getNbpoints();
         double[] fixaxispar2 = axis2.getFixAxisPar();
         switch (compuMethodMap.get((axis2.getRefCompuMethod())).getType()) {
@@ -875,6 +892,7 @@ public class ValueHandler {
 
                 axisY.set(VALUE_FIELD, objtabaxisY);
                 axisY.put(UNIT, unit);
+                axisY.put(INPUTQ, inputquantity2);
 
                 break;
             case TAB_VERB:
@@ -885,6 +903,7 @@ public class ValueHandler {
                 }
                 axisY.set(VALUE_FIELD, objtabaxisY);
                 axisY.put(UNIT, "");
+                axisY.put(INPUTQ, inputquantity2);
                 break;
             default:
                 break;
@@ -1083,6 +1102,9 @@ public class ValueHandler {
         ArrayNode objtabaxisY = jsonMapper.createArrayNode();
         ArrayNode objtabdata = jsonMapper.createArrayNode();
 
+        String inputquantity1 = axisPts1.getInputquantity();
+        String inputquantity2 = axisPts2.getInputquantity();
+
         // Determine the axis 1
         switch (compuMethodMap.get((c.getAxises().getFirst().getRefCompuMethod())).getType()) {
             case RAT_FUNC:
@@ -1100,7 +1122,7 @@ public class ValueHandler {
 
                 axisX.set(VALUE_FIELD, objtabaxisX);
                 axisX.put(UNIT, unit);
-
+                axisX.put(INPUTQ, inputquantity1);
                 break;
             case TAB_VERB:
                 CompuVTab enuObj = compuVTabMap
@@ -1114,6 +1136,7 @@ public class ValueHandler {
                 }
                 axisX.set(VALUE_FIELD, objtabaxisX);
                 axisX.put(UNIT, "");
+                axisX.put(INPUTQ, inputquantity1);
                 break;
             default:
                 break;
@@ -1133,6 +1156,7 @@ public class ValueHandler {
 
                 axisY.set(VALUE_FIELD, objtabaxisY);
                 axisY.put(UNIT, unit);
+                axisY.put(INPUTQ, inputquantity2);
                 break;
             case TAB_VERB:
                 CompuVTab enuObj = compuVTabMap
@@ -1144,7 +1168,7 @@ public class ValueHandler {
                 }
                 axisY.set(VALUE_FIELD, objtabaxisY);
                 axisY.put(UNIT, "");
-
+                axisY.put(INPUTQ, inputquantity2);
                 break;
             default:
                 break;
@@ -1211,6 +1235,10 @@ public class ValueHandler {
         ArrayNode objtabaxisY = jsonMapper.createArrayNode();
         ArrayNode objtabdata = jsonMapper.createArrayNode();
 
+        String inputquantity1 = c.getAxises().getFirst().getInputquantity();
+        String inputquantity2 = c.getAxises().get(1).getInputquantity();
+
+
         // Determine the axis 1
         switch (compuMethodMap.get((c.getAxises().getFirst().getRefCompuMethod())).getType()) {
             case RAT_FUNC:
@@ -1225,6 +1253,7 @@ public class ValueHandler {
 
                 axisX.set(VALUE_FIELD, objtabaxisX);
                 axisX.put(UNIT, unit);
+                axisX.put(INPUTQ, inputquantity1);
                 break;
             case TAB_VERB:
                 CompuVTab enuObj = compuVTabMap
@@ -1235,6 +1264,7 @@ public class ValueHandler {
                 }
                 axisX.set(VALUE_FIELD, objtabaxisX);
                 axisX.put(UNIT, "");
+                axisX.put(INPUTQ, inputquantity1);
                 break;
             default:
                 break;
@@ -1253,6 +1283,7 @@ public class ValueHandler {
 
                 axisY.set(VALUE_FIELD, objtabaxisY);
                 axisY.put(UNIT, unit);
+                axisY.put(INPUTQ, inputquantity2);
 
                 break;
             case TAB_VERB:
@@ -1265,6 +1296,7 @@ public class ValueHandler {
                 }
                 axisY.set(VALUE_FIELD, objtabaxisY);
                 axisY.put(UNIT, "");
+                axisY.put(INPUTQ, inputquantity2);
                 break;
             default:
                 break;

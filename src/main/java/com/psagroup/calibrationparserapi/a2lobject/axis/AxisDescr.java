@@ -16,6 +16,8 @@ public class AxisDescr extends PrimaryObject {
 	
 	double[] fixAxisPar;
 
+	public String getInputquantity(){ return inputquantity;}
+
 	void setType(AxisType axisType){
 		this.type = axisType;
 	}
