@@ -76,15 +76,15 @@ public class CalibrationParserApi2 {
             JSONObject js = new JSONObject();
             try {
                 js.put("label", labels);
-                js.put("charType: ", charType);
-                js.put("Address: ", Address);
-                js.put("Number: ", Number);
-                js.put("description: ", description);
-                js.put("RecordLayout: ", RecordLayout);
-                js.put("ComputMethod: ", computMethod);
-                js.put("upper: ", upper);
-                js.put("lower: ", lower);
-                js.put("maxdiff: ", _c.getMaxdiff());
+                js.put("charType", charType);
+                js.put("Address", Address);
+                js.put("Number", Number);
+                js.put("description", description);
+                js.put("RecordLayout", RecordLayout);
+                js.put("ComputMethod", computMethod);
+                js.put("upper", upper);
+                js.put("lower", lower);
+                js.put("maxdiff", _c.getMaxdiff());
                 js.put("extended_limits", _c.getExtended_limits());
                 js.put("format", _c.getFormat());
                 if (result == null) {
