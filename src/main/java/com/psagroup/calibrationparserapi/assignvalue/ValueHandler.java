@@ -38,7 +38,8 @@ public class ValueHandler {
     private static final String ROW_DIR = "ROW_DIR";
     private static final String COLUMN_DIR = "COLUMN_DIR";
     private static final String DATA_FIELD = "data";
-    public static final int ULP_DATA_RANGE = 32;
+    public static final int ULP_DATA_RANGE = 32;    //　这里原来为127，但是看后面的代码逻辑，只能是32，
+                                                    // 因为读取一个元素的需要该元素的地址add１，从这个地址找到离它最近的基准地址add，目前只支持寻找最近的基准地址
     public static final int HEX_DATA_RANGE = 32;
 
     private final Logger logger = LoggerFactory.getLogger(ValueHandler.class);
@@ -329,8 +330,8 @@ public class ValueHandler {
     private double[] affectValBlkNum(DataType d, String startaddress, int nbpoints, int byteperRead, CompuMethod comp) {
         double[] dtab = new double[nbpoints];
         String hexAddrData = "";
-        for (int i = 0; i < nbpoints; i++) {
-            hexAddrData = "0x" + Long.toHexString(Long.decode(startaddress) + i * byteperRead);
+        for (int i = 0; i < nbpoints; i++) {  // 一共需要读取几个数据，也就是MAP或者CURVE中存放的元素的数目
+            hexAddrData = "0x" + Long.toHexString(Long.decode(startaddress) + i * byteperRead);   // 每个元素的地址
             dtab[i] = comp.rat_func(decodeValue(d, addressMap, byteperRead, hexAddrData));
         }
         return dtab;
@@ -1457,7 +1458,7 @@ public class ValueHandler {
     private String searchValueHEX(Map<String, String> AddressDataMap, int byteperRead, String address) {
         Long decAddress = Long.decode(address);
         String decodedValueHEX = "0x";
-
+        System.out.println("#ByteRead: " + byteperRead);   // ByteperRead 只是MAP或者CURVE中一个元素的数据， 1 or 2 or 4
         //System.out.println("searchValueHEX - decAddress:" + " " + address + " " + decAddress);
 
         // When an address, near the address we're looking for, matches a key address
@@ -1470,7 +1471,7 @@ public class ValueHandler {
                 String invDecodedValueHex = "";
                 // We take its position in the Data set of the AddressDataMap of the key address
                 long diff = decAddress - i;
-                try {
+                try {   // 目前只支持寻找最近的偏移基址
                     // We split the Dataset into an array of hexadecimal byte
                     System.out.println("look up table : " + Long.toHexString(i));
                     String[] vData = AddressDataMap.get(Long.toHexString(i)).split(" ");
