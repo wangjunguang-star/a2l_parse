@@ -98,7 +98,6 @@ public class CalibrationParserApi2 {
             }
             System.out.println("Output = " + js.toString());
             bw.write(js.toString());
-            //bw.write("\\n");
             bw.newLine();
         }
 

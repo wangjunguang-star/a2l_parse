@@ -56,7 +56,7 @@ class A2lCurve():
         return self.value[i-1] + gap * (self.value[i] - self.value[i-1])
 
 
-# In[190]:
+# In[230]:
 
 
 # map stored in A2lMap class
@@ -110,6 +110,84 @@ class A2lMap():
     def lookup_scipy(self, x, y):
         new_ = self.f(y, x)
         return new_
+    
+    def lookup_v2(self, x, y):
+        """
+        根据标定量MAP的两个坐标轴的输入，通过双线性插值的方法获取对应的值
+        """
+        x_sz = len(self.axisX)
+        y_sz = len(self.axisY)
+        x_idx = 0
+        y_idx = 0
+        x_idx_before = x_idx
+        y_idx_before = y_idx
+        # searach axisX
+        if x <= self.axisX[0]:
+            x_idx = 0
+            x = self.axisX[0]
+        elif x>= self.axisX[x_sz-1]:
+            x_idx = x_sz - 1
+            x = self.axisX[x_sz-1]
+        else:
+            while x >= self.axisX[x_idx] and x_idx < x_sz:
+                if x == self.axisX[x_idx]:
+                    break
+                x_idx += 1
+        # search axisY
+        if y <= self.axisY[0]:
+            y = self.axisY[0]
+            y_idx = 0
+        elif y>= self.axisY[y_sz-1]:
+            y = self.axisY[y_sz-1]
+            y_idx = y_sz - 1
+        else:
+            while y >= self.axisY[y_idx] and y_idx < y_sz:
+                if y == self.axisY[y_idx]:
+                    break
+                y_idx += 1
+        
+        print("###")
+        print(x_idx, y_idx)  
+        
+        #print("x_idx: %d, y_idx: %d" % (x_idx, y_idx))
+        if x_idx == 0 :
+            x_idx_before = x_idx
+        else:
+            x_idx_before = x_idx - 1
+        
+        if y_idx == 0 :
+            y_idx_before = y_idx
+        else:
+            y_idx_before = y_idx - 1
+          
+        print(x_idx_before, y_idx_before)
+
+        Q11 = self.value[x_idx][y_idx_before]
+        Q21 = self.value[x_idx][y_idx]
+        Q12 = self.value[x_idx_before][y_idx_before]
+        Q22 = self.value[x_idx_before][y_idx]
+        
+        #print("Q11: %f, Q21: %f, Q12: %f, Q22: %f"%(Q11, Q21, Q12, Q22))
+
+        y_gap = self.axisY[y_idx] - self.axisY[y_idx_before]
+        x_gap = self.axisX[x_idx] - self.axisX[x_idx_before]
+        
+        if x_gap == 0 and y_gap == 0:
+            return Q11
+        elif x_gap == 0 and y_gap != 0:
+            percent = (y - self.axisY[y_idx_before]) / y_gap 
+            return (Q21 - Q11) * percent + Q11
+        elif y_gap == 0 and x_gap != 0:
+            percent = (x - self.axisX[x_idx_before]) / x_gap
+            return  (Q11 - Q12) * percent + Q12
+        else:
+            delta1 = Q21 - Q22
+            delta2 = Q11 - Q12
+            
+            tmp1 = delta1 * (x - self.axisX[x_idx_before]) / x_gap + Q22
+            tmp2 = delta2 * (x - self.axisX[x_idx_before]) / x_gap + Q12
+            tmp = (tmp2 - tmp1) * (y - self.axisY[y_idx_before]) / y_gap + tmp1
+            return tmp
 
     def lookup(self, x, y):
         """
@@ -203,7 +281,7 @@ class A2lMap():
         return fp
 
 
-# In[191]:
+# In[231]:
 
 
 file_name = "C:/Users/GW00205581/Desktop/calibration-data-v1/20191101--k7--5160/parse_calibration.json"
@@ -224,13 +302,13 @@ with open(file_name, "r") as f:
             break
 
 
-# In[192]:
+# In[232]:
 
 
 check_label = "ACM_EGRL_NC_PIPE1_HT_EFF_APM"
 
 
-# In[198]:
+# In[235]:
 
 
 file_name = "C:/Users/GW00205581/Desktop/calibration-data-v1/20191101--k7--5160/parse_calibration.json"
@@ -258,58 +336,66 @@ with open(file_name, "r") as f:
 #             print( "%.6f"%(a2l.lookup(3089.7, 160)) )
             
             # 准确找到的值
-#             a = [[-50,5],[1000, 160], [0, 5.5], [100, 20], [1000, 160], [800, 160],[800,130],
-#                 [1000,5],[800,5.5],[-50,160]]
-
-            # 中间插值
+            a = [[-50,5],[1000, 160], [0, 5.5], [100, 20], [1000, 160], [800, 160],[800,130],
+                [1000,5],[800,5.5],[-50,160]]
+            for tu in a:
+                print( "%.2f \t %.2f \t %.6f"%(tu[0], tu[1], a2l.lookup(tu[0],tu[1])) )
+            
+            print("~" * 50)
+            
+            # 角
             a = [[-50,5], [-50,160], [1000, 5], [1000,160]]
             for tu in a:
                 print( "%.2f \t %.2f \t %.6f"%(tu[0], tu[1], a2l.lookup(tu[0],tu[1])) )
-                
-            a = [[-70,0.5], [-430,169], [1001, 3.5], [10111,1060]]
+            
+            print("~" * 50)
+            
+            # 边
+            a = [[-50,5.25], [-50,40],
+                 [1000, 5.25], [1000,145]]
+            for tu in a:
+                print( "%.2f \t %.2f \t %.6f"%(tu[0], tu[1], a2l.lookup(tu[0],tu[1])) )
+            a =[[-25, 5], [450,5],[900,5],
+                [-25, 160], [150,160], [900,160]]
             for tu in a:
                 print( "%.2f \t %.2f \t %.6f"%(tu[0], tu[1], a2l.lookup(tu[0],tu[1])) )
             
+            print("&" * 50)
+            print("&" * 50)
             
-            
+            a =[[-25, 5.25], [450,8.5],[900,60],
+                [566, 78], [-32,123], [755,7.6],
+               [-32, 11.4]]
+            for tu in a:
+                print("QQQQ"*10)
+                print( "QQQQ %.2f \t %.2f \t %.6f"%(tu[0], tu[1], a2l.lookup(tu[0],tu[1])) )
+                print( "QQQQ %.2f \t %.2f \t %.6f"%(tu[0], tu[1], a2l.lookup_v2(tu[0],tu[1])) )
             #print(a2l.lookup_scipy(2.0, 4600.0))
             break
 
 
-# In[171]:
+# In[208]:
 
 
-(.60181 - 0.6131) * 0.5 + 0.6131
+(0.59555 + )/2
 
 
-# In[162]:
+# In[209]:
 
 
-(0.60463 - 0.593342) / 0.593342
+(0.579255 - 0.59555) * 0.25 + 0.59555
 
 
-# In[175]:
+# In[211]:
 
 
-(0.6131 - 0.61481) * 0.5 +  0.61481
+(0.3662678 - 0.362433 ) / 0.362433
 
 
-# In[176]:
+# In[213]:
 
 
-(0.60181 - 0.60349 ) * 0.5 + 0.60349
-
-
-# In[177]:
-
-
-(0.6026499999999999 - 0.613955 ) * 0.5 + 0.613955
-
-
-# In[178]:
-
-
-(0.6083025 - 0.608299) / 0.608299
+0.0047 / 0.515060
 
 
 # In[ ]:
